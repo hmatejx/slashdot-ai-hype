@@ -21,14 +21,17 @@ data <- list(T = length(idx),
              Y = dd$Facebook[idx])
 
 
-iter <- 200
-warmup <- 100
-nChains <- 1
+iter <- 400
+warmup <- 200
+nChains <- 4
 
 fit <- stan(file = "facebook.stan",
             data = data,
             iter = iter,
+            pars = c("beta", "mu", "N", "I0", "R0", "sigma"),
+            init = list(list(N=90), list(N=100), list(N=101), list(N=110)),
             warmup = warmup,
             chains = nChains,
             cores = min(nChains, parallel::detectCores()),
             verbose = T)
+
