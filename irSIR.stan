@@ -27,6 +27,11 @@ data {
 transformed data {
   real x_r[0];
   int x_i[0];
+  real Time_pred[2*T];
+  
+  for (t in 1:(2*T)) {
+    Time_pred[t] = t;
+  }
 }
 
 parameters {
@@ -58,24 +63,24 @@ model {
   log_beta ~ normal(0, 1);
   log_nu ~ normal(0, 1);
   N ~ normal(100, 10);
-  x ~ dirichlet([100, 1, 1]');
+  x ~ dirichlet([20, 1, 1]');
   sigma ~ cauchy(0, 1);
-  
+
   # model
   y = irSIR(Time, {S0, I0, R0}, {beta, nu, N}, x_r, x_i);
 
   # likelihood
   for (t in 1:T) {
-    Y[t] ~ normal(y[t], sigma);
+    Y[t] ~ normal(y[t], y[t]*sigma + 0.1);
   }
 }
 
 generated quantities {
-  real Y_pred[T];
-
-  Y_pred = irSIR(Time, {S0, I0, R0}, {beta, nu, N}, x_r, x_i);
-
-  for (t in 1:T) {
-    Y_pred[t] = Y_pred[t] + normal_rng(0, sigma);
+  real Y_pred[2*T];
+ 
+  Y_pred = irSIR(Time_pred, {S0, I0, R0}, {beta, nu, N}, x_r, x_i);
+  
+  for (t in 1:(2*T)) {
+    Y_pred[t] = normal_rng(Y_pred[t], Y_pred[t]*sigma + 0.1);
   }
 }
