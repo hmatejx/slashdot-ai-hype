@@ -15,6 +15,7 @@ done
 echo "Preparing database in csv format..."
 rm -f slashdot.db
 echo "Date,Article" > slashdot.db
+rm -rf ./alterslash_dump && mkdir ./alterslash_dump
 pushd ./alterslash_dump >/dev/null
 for f in 2*[0-9]; do
 	awk '{print FILENAME "," $0}' $f >> ../slashdot.db
