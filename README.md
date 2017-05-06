@@ -1,6 +1,6 @@
 # slashdot-ai-hype
 
-Short exploration of the rise of hype-laden buzzwords announcing the impending domination of the worlds by sentient computers
+Short exploration of the rise (and fall) of hype-laden buzzwords announcing the impending domination of the worlds by sentient computers.
 
 ---
 
@@ -9,7 +9,7 @@ Short exploration of the rise of hype-laden buzzwords announcing the impending d
 - Explain about the irSIR model
 - Name references, i.e.
     - http://arxiv.org/abs/1401.4208v1
-    - http://arXiv.org/abs/1608.07870v1
+    - http://arxiv.org/abs/1608.07870v1
 
 ### Examples
 
