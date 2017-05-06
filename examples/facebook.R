@@ -8,19 +8,19 @@ options(mc.cores = parallel::detectCores())
 library(shinystan)
 
 # load data
-dd <- read.csv("irSIR_examples/Facebook.csv", as.is = T, header = F, skip = 3)
-names(dd) <- c("Date", "Facebook")
+dd <- read.csv("Facebook.csv", as.is = T, header = F, skip = 3)
+names(dd) <- c("Date", "Popularity")
 dd$Date <- as.Date(paste0(dd$Date, "-01"), format = "%Y-%m-%d")
 
 # normalize the jump at october 2012 away
-dd$Facebook[dd$Date >= as.Date("2012-10-01")] <- 0.804 * dd$Facebook[dd$Date >= as.Date("2012-10-01")]
-dd$Facebook <- 100 * dd$Facebook / max(dd$Facebook, na.rm = T)
+dd$Popularity[dd$Date >= as.Date("2012-10-01")] <- 0.804 * dd$Popularity[dd$Date >= as.Date("2012-10-01")]
+dd$Popularity <- 100 * dd$Popularity / max(dd$Popularity, na.rm = T)
 
 # prepare list to serve as data for STAN
-idx <- which(dd$Facebook > 0)
+idx <- which(dd$Popularity > 0)
 fit_data <- list(T = length(idx),
                  Time = as.numeric(dd$Date[idx] - dd$Date[idx[1] - 1])/30,
-                 Y = dd$Facebook[idx])
+                 Y = dd$Popularity[idx])
 Y_meas = fit_data$Y
 
 # MCMC parameters
@@ -29,10 +29,10 @@ warmup <- 400
 nChains <- 4
 
 # fit data with STAN
-fit <- stan(file = "irSIR.stan",
+fit <- stan(file = "../model/irSIR.stan",
             data = fit_data,
             iter = iter,
-            init = rep(list(list(sigma = 0.35, beta = 0.15, nu = 0.05, N = 120, x = c(0.94, 0.01, 0.05))), nChains),
+            init = rep(list(list(sigma = 0.35, log_beta = -2, log_nu = -3, N = 120, x = c(0.94, 0.01, 0.05))), nChains),
             warmup = warmup,
             chains = nChains,
             cores = min(nChains, parallel::detectCores()),
@@ -58,7 +58,7 @@ lines(Time_pred, Y_pred[, 2], lwd = 3)
 points(dd$Date[idx], Y_meas, pch = 21, bg = "white", cex = 1.2)
 abline(v = as.Date("2017-05-05"), lty = 2)
 legend("topright", bty = "n", 
-       legend = c("Google trends data",
+       legend = c("Google Trends data",
                   "Line of best fit",
                   "95% prediction interval",
                   "Today"),

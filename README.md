@@ -32,11 +32,13 @@ The model is implemented in the [Stan](http://mc-stan.org/) probabilistic progra
 
 ### Example fit of irSIR model
 
-Fit of Google Trends data for the [Facebook search string](https://trends.google.com/trends/explore?date=all&amp;amp;q=Facebook):
+Fit of Google Trends data for the [Facebook](https://trends.google.com/trends/explore?date=all&amp;amp;q=Facebook) and [LinkedIn](https://trends.google.com/trends/explore?date=all&amp;amp;q=LinkedIn) search strings:
 
 
 
 ![Facebook fit](img/Facebook_irSIR_fit.png)
+
+![LinkedIn fit](img/LinkedIn_irSIR_fit.png)
 
 ### Main results
 
