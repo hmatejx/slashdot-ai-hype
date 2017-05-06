@@ -44,7 +44,7 @@ launch_shinystan(sso)
 # posterior predictive check
 Y_pred <- t(apply(extract(fit, "Y_pred", permuted = F), 3, quantile, prob = c(0.025, 0.5, 0.975)))
 N_pred <- nrow(Y_pred)
-Time_pred <- dd$Date[idx[1]] + (1:N_pred)*30
+Time_pred <- dd$Date[idx[1] - 1] + (1:N_pred)*30
 plot(Time_pred, rep(NA, 2*length(idx)), ylim = c(0, max(Y_pred)),
      xlab = "Date", ylab = "Normalized popularity", 
      main = "LinkedIn popularity modeled by irSIR")
