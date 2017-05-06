@@ -8,21 +8,21 @@ options(mc.cores = parallel::detectCores())
 library(shinystan)
 
 # load data
-dd <- read.csv("LinkedIn.csv", as.is = T, header = F, skip = 3)
+dd <- read.csv("PokémonGo.csv", as.is = T, header = F, skip = 3)
 names(dd) <- c("Date", "Popularity")
 dd$Date <- as.Date(paste0(dd$Date, "-01"), format = "%Y-%m-%d")
 
 # prepare list to serve as data for STAN
 idx <- which(dd$Popularity > 0)
 fit_data <- list(T = length(idx),
-                 Time = as.numeric(dd$Date[idx] - dd$Date[idx[1] - 1])/30,
+                 Time = as.numeric(dd$Date[idx] - dd$Date[idx[1] - 1])/7,
                  Y = dd$Popularity[idx])
 Y_meas = fit_data$Y
 
 # MCMC parameters
 iter <- 800
 warmup <- 400
-nChains <- 4
+nChains <- 1
 
 # fit data with STAN
 fit <- stan(file = "../model/irSIR.stan",
@@ -44,7 +44,7 @@ launch_shinystan(sso)
 # posterior predictive check
 Y_pred <- t(apply(extract(fit, "Y_pred", permuted = F), 3, quantile, prob = c(0.025, 0.5, 0.975)))
 N_pred <- nrow(Y_pred)
-Time_pred <- dd$Date[idx[1]] + (1:N_pred)*30
+Time_pred <- dd$Date[idx[1]] + (0:(N_pred - 1))*7
 plot(Time_pred, rep(NA, 2*length(idx)), ylim = c(0, max(Y_pred)),
      xlab = "Date", ylab = "Normalized popularity", 
      main = "LinkedIn popularity modeled by irSIR")
