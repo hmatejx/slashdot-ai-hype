@@ -38,8 +38,8 @@ fit <- stan(file = "../model/irSIR.stan",
 print(fit, pars = c("sigma", "beta", "nu", "N", "S0", "I0", "R0"))
 
 # explore the fit in Shiny
-sso <- as.shinystan(fit)
-launch_shinystan(sso)
+# sso <- as.shinystan(fit)
+# launch_shinystan(sso)
 
 # posterior predictive check
 Y_pred <- t(apply(extract(fit, "Y_pred", permuted = F), 3, quantile, prob = c(0.025, 0.5, 0.975)))
