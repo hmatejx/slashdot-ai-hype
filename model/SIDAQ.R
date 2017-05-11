@@ -22,7 +22,7 @@ parameters <- c(N = 100,
                 mu_I = 2.3e-02, mu_D = 2.2e-02,
                 eta_I = 1.8e-02, eta_D = 2.7e-02
                 )
-state      <- c(S = 1, I = 6.43e-05, D = 2.35e-06, A = 1e-05, Q = 1e-05) * parameters["N"]
+state      <- c(S = 1, I = 6.43e-05, D = 1e-06, A = 3e-05, Q = 5e-05) * parameters["N"]
 times      <- seq(0, 1000, by = 1)
 out <- ode(y = state, times = times, func = SIDAQ, parms = parameters)
 out <- as.data.frame(out)
