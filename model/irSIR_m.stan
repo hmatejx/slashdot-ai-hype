@@ -71,7 +71,7 @@ model {
 
   // likelihood
   for (t in 1:T) {
-    Y[t] ~ normal(y[t], sqrt(fabs(y[t]) + 0.01)*sigma);
+    log(Y[t]) ~ normal(log(y[t]), sigma);
   }
 }
 
@@ -81,6 +81,6 @@ generated quantities {
   Y_pred = irSIR(Time_pred, {S0, I0, R0}, {beta, nu, N}, x_r, x_i);
   
   for (t in 1:(2*T)) {
-    Y_pred[t] = normal_rng(Y_pred[t], sqrt(fabs(Y_pred[t]) + 0.01)*sigma);
+    Y_pred[t] = exp(normal_rng(log(Y_pred[t]), sigma));
   }
 }

@@ -24,21 +24,25 @@ The approach is to fit the normalized popularity data using the irSIR model. The
 
 As the absolute scale is not known, the noise is approximated by a normal distribution whose width is proportional to the square root of the normalized popularity score. This approach has shown to be able to adequately describe the observed variability. 
 
-**The key principle is to include _all_ uncertainties into prediction.**
+**The key principle is to try to include _all_ uncertainties into prediction.**
 
 Coupled with weak uninformative priors we obtain the _posterior predictive distribution_ of the normalized popularity. The model can also be extrapolated into the future. 
 
 The model is implemented in the [Stan](http://mc-stan.org/) probabilistic programming language, which uses the advanced NUTS MCMC sampling algorithm.
 
-### Example fit of irSIR model
+Of course, it goes without saying that even the Bayesian approach cannot account for fitting the wrong model ;-)
 
-Fit of Google Trends data for the [Facebook](https://trends.google.com/trends/explore?q=Facebook) and [LinkedIn](https://trends.google.com/trends/explore?q=LinkedIn) search strings:
+### Example fits of irSIR model
 
+Fit of Google Trends data for the [Facebook](https://trends.google.com/trends/explore?q=Facebook) and [LinkedIn](https://trends.google.com/trends/explore?q=LinkedIn) search strings.
 
+The model is fitted to the data up to 2017-05-01. The remaining data will be used for ongoing validation. I am genuinely curious about how accurate the predictions will turn out to be.
 
 ![Facebook fit](img/Facebook_irSIR_fit.png)
 
 ![LinkedIn fit](img/LinkedIn_irSIR_fit.png)
+
+![Cryptocurrency fit](img/Cryptocurrency_irSIR_fit.png)
 
 ### Main results
 

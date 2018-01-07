@@ -5,7 +5,7 @@ rm(list = ls())
 library(rstan)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
-library(shinystan)
+#library(shinystan)
 
 # load data
 dd <- read.csv("Facebook.csv", as.is = T, header = F, skip = 3)
@@ -43,7 +43,7 @@ fit <- stan(file = "../model/irSIR.stan",
             verbose = T)
 
 # print results
-print(fit, pars = c("sigma", "beta", "nu", "N", "S0", "I0", "R0"))
+print(fit, pars = c("sigma", "beta", "nu", "N", "S0", "I0", "R0"), digits_summary = 3)
 
 # explore the fit in Shiny
 # sso <- as.shinystan(fit)
