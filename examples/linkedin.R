@@ -12,6 +12,10 @@ dd <- read.csv("LinkedIn.csv", as.is = T, header = F, skip = 3)
 names(dd) <- c("Date", "Popularity")
 dd$Date <- as.Date(paste0(dd$Date, "-01"), format = "%Y-%m-%d")
 
+# split into training and validation set
+dd.new <- dd[dd$Date > as.Date("2017-05-05"), ]
+dd <- dd[dd$Date <= as.Date("2017-05-05"), ]
+
 # prepare list to serve as data for STAN
 idx <- which(dd$Popularity > 0)
 fit_data <- list(T = length(idx),
@@ -51,12 +55,14 @@ plot(Time_pred, rep(NA, 2*length(idx)), ylim = c(0, max(Y_pred)),
 polygon(c(Time_pred, rev(Time_pred)), c(Y_pred[, 1], rev(Y_pred[, 3])),
         col = "gray", border = NA)
 lines(Time_pred, Y_pred[, 2], lwd = 3)
-points(dd$Date[idx], Y_meas, pch = 21, bg = "white", cex = 1.2)
+points(dd$Date[idx], Y_meas, pch = 21, bg = rgb(1, 1, 1, 0.6), cex = 1.2)
+points(dd.new$Date, dd.new$Popularity, pch = 21, bg = rgb(1, 0, 0, 0.6), cex = 1.2)
 abline(v = as.Date("2017-05-05"), lty = 2)
 legend("topright", bty = "n", 
-       legend = c("Google Trends data",
-                  "Line of best fit",
-                  "95% prediction interval",
-                  "Today"),
-       lty = c(NA, 1, NA, 2), lwd = c(NA, 3, NA, 1), pch = c(21, NA, 15, NA),
-       col = c("black", "black", "gray", "black"), pt.cex = c(1.2, NA, 2, NA))
+       legend = c("Google Trends (train)",
+                  "Google Trends (val.)",
+                  "Curve of best fit",
+                  "95% prediction interval"),
+       lty = c(NA, NA, 1, NA), lwd = c(NA, NA, 3, NA), pch = c(21, 21, NA, 15),
+       col = c("black", "black", "black", "gray"), pt.cex = c(1.2, 1.2, NA, 2),
+       pt.bg = c("white", "red", NA, NA))

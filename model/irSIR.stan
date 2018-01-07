@@ -59,17 +59,17 @@ transformed parameters {
 model {
   real y[T];
 
-  # priors
+  // priors
   log_beta ~ normal(0, 1);
   log_nu ~ normal(0, 1);
   N ~ normal(100, 10);
   x ~ dirichlet([20, 1, 1]');
   sigma ~ cauchy(0, 1);
 
-  # model
+  // model
   y = irSIR(Time, {S0, I0, R0}, {beta, nu, N}, x_r, x_i);
 
-  # likelihood
+  // likelihood
   for (t in 1:T) {
     Y[t] ~ normal(y[t], sqrt(fabs(y[t]) + 0.01)*sigma);
   }
