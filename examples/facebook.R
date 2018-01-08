@@ -54,7 +54,7 @@ Y_pred <- t(apply(extract(fit, "Y_pred", permuted = F), 3, quantile, prob = c(0.
 N_pred <- nrow(Y_pred)
 Time_pred <- dd$Date[idx[1] - 1] + (1:N_pred)*30
 plot(Time_pred, rep(NA, 2*length(idx)), ylim = c(0, max(Y_pred)),
-     xlab = "Date", ylab = "Normalized popularity", 
+     xlab = "Date", ylab = "Normalized popularity",
      main = "Facebook popularity modeled by irSIR")
 polygon(c(Time_pred, rev(Time_pred)), c(Y_pred[, 1], rev(Y_pred[, 3])),
         col = "gray", border = NA)
@@ -62,7 +62,7 @@ lines(Time_pred, Y_pred[, 2], lwd = 3)
 points(dd$Date[idx], Y_meas, pch = 21, bg = rgb(1, 1, 1, 0.6), cex = 1.2)
 points(dd.new$Date, dd.new$Popularity, pch = 21, bg = rgb(1, 0, 0, 0.6), cex = 1.2)
 abline(v = as.Date("2017-05-05"), lty = 2)
-legend("topright", bty = "n", 
+legend("topright", bty = "n",
        legend = c("Google Trends (train)",
                   "Google Trends (val.)",
                   "Curve of best fit",
