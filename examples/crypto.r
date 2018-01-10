@@ -9,7 +9,7 @@ options(mc.cores = parallel::detectCores())
 library(gtrendsR)
 
 # load data
-dd <- gtrends("Cryptocurrency", time = "2017-04-01 2018-01-07")$interest_over_time[, 1:2]
+dd <- gtrends("Cryptocurrency", time = "2017-01-01 2018-01-10")$interest_over_time[, 1:2]
 names(dd) <- c("Date", "Popularity")
 dd$Date <- as.Date(dd$Date)
 dd <- dd[dd$Popularity > 0, ]
@@ -21,19 +21,19 @@ fit_data <- list(T = nrow(dd),
 Y_meas = fit_data$Y
 
 # MCMC parameters
-iter <- 800*10
+iter <- 800*16
 warmup <- 400
 nChains <- 4
 
 # fit data with STAN
-fit <- stan(file = "../model/irSIR_m.stan",
+fit <- stan(file = "../model/crypto.stan",
             data = fit_data,
             iter = iter,
-            init = rep(list(list(sigma = 0.44, 
-                                 log_beta = log(0.43), 
-                                 log_nu = log(0.54),
-                                 N = 100, 
-                                 x = c(0.979, 0.003, 0.018))), nChains),
+            init = rep(list(list(sigma = 1.5, 
+                                 log_beta = log(0.032), 
+                                 log_nu = log(0.7),
+                                 N = 104, 
+                                 x = c(0.965, 0.03, 0.005))), nChains),
             warmup = warmup,
             chains = nChains,
             cores = min(nChains, parallel::detectCores()),
