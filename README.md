@@ -42,7 +42,14 @@ The model is fitted to the data up to 2017-05-01. The remaining data will be use
 
 ![LinkedIn fit](img/LinkedIn_irSIR_fit.png)
 
-![Cryptocurrency fit](img/Cryptocurrency_irSIR_fit.png)
+### Related example (FOMO/FUD model)
+
+Below is a slightly different model shown fitting to the Cryptocurrency Google Trends keyword.
+The model builds upon the ideas of the irSIR model and I call it the _FOMO/FUD_ model. 
+
+The differential evolution equations are similar to irSIR, but the $S I/N$ and $I R/N$ terms are replaced with $S\cdot I^2/N^2$ and $I R^2/N^2$. The square terms try to approximate the _perceived value_ of belonging to a particular sub-group modeled by Metcalfe's law.
+
+![Cryptocurrency fit](img/Cryptocurrency_FOMO-FUD_fit.png)
 
 ### Main results
 
