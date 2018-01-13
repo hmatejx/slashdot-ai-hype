@@ -1,4 +1,5 @@
 *.RData
 *.Rsave
 *.rds
+*.html
 .Rhistory

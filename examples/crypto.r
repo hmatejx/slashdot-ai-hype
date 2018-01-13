@@ -9,7 +9,7 @@ options(mc.cores = parallel::detectCores())
 library(gtrendsR)
 
 # load data
-dd <- gtrends("Cryptocurrency", time = "2017-01-01 2018-01-10")$interest_over_time[, 1:2]
+dd <- gtrends("Cryptocurrency", time = "2017-01-01 2018-01-13")$interest_over_time[, 1:2]
 names(dd) <- c("Date", "Popularity")
 dd$Date <- as.Date(dd$Date)
 dd <- dd[dd$Popularity > 0, ]
