@@ -8,9 +8,24 @@ options(mc.cores = parallel::detectCores())
 #library(shinystan)
 library(gtrendsR)
 
-# load data
-dd <- gtrends("Cryptocurrency", time = "2017-01-01 2018-01-13")$interest_over_time[, 1:2]
-names(dd) <- c("Date", "Popularity")
+# load data (stitch together multiple shorter time periods)
+startDate <- "2017-01-01"
+keyword <- "Cryptocurrency"
+dd <- gtrends(keyword, time = paste(as.Date(startDate) + 0, as.Date(startDate) + 90))$interest_over_time[, 1:2]
+dd$block <- 0
+for (i in 1:4) {
+  period <- paste(as.Date(startDate) + i*90, min(Sys.Date(), as.Date(startDate) + (i + 1)*90))
+  cat("period =", period, "\n")
+  dd <- rbind(dd, cbind(gtrends(keyword, time = period)$interest_over_time[, 1:2], block = i))
+}
+names(dd)[1:2] <- c("Date", "Popularity")
+for (b in 1:4) {
+  bc <- which(dd$block == b)
+  bp <- which(dd$block == b - 1)
+  dd[bc, 2] <- dd[bc, 2] * dd[bp[length(bp)], 2] / dd[bc[1], 2]
+}
+dd <- dd[-which(diff(dd$block) == 1), ]
+dd$Popularity <- 100 * dd$Popularity / max(dd$Popularity)
 dd$Date <- as.Date(dd$Date)
 dd <- dd[dd$Popularity > 0, ]
 
@@ -23,7 +38,7 @@ Y_meas = fit_data$Y
 # MCMC parameters
 iter <- 800*16
 warmup <- 400
-nChains <- 4
+nChains <- 1
 
 # fit data with STAN
 fit <- stan(file = "../model/crypto.stan",
@@ -52,7 +67,7 @@ N_pred <- nrow(Y_pred)
 Time_pred <- dd$Date[1] + (1:N_pred)*(dd$Date[2] - dd$Date[1])
 plot(Time_pred, rep(NA, 2*nrow(dd)), ylim = c(0, max(Y_pred)),
      xlab = "Date", ylab = "Normalized popularity", 
-     main = "Cryptocurrency popularity modeled by irSIR")
+     main = "Cryptocurrency popularity modeled by FOMO/FUD")
 polygon(c(Time_pred, rev(Time_pred)), c(Y_pred[, 1], rev(Y_pred[, 3])),
         col = "gray", border = NA)
 lines(Time_pred, Y_pred[, 2], lwd = 3)
