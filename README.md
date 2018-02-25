@@ -50,10 +50,24 @@ Below is a slightly different model shown fitting to the Cryptocurrency search k
 
 The differential equations are similar to irSIR, but the SI/N and IR/N terms are replaced with S(I/N)^2 and I(R/N)^2. The square terms approximate the _perceived value_ of belonging to a particular sub-group as modeled by [Metcalfe's law](https://en.wikipedia.org/wiki/Metcalfe%27s_law).
 
-![Cryptocurrency fit](img/Cryptocurrency_FOMO-FUD_fit.png)
+#### Attempt at a global fit
 
-The fit seems quite good (much better than the irSIR fit), but the raw data is of insufficient quality. If I find the time I will write a script to obtain more precise data by querying Google Trends in shorter time periods and stitching together the results.
+The fit to the time period from 2017 onwards is shown in the figure below. Two things can be noticed immediately. The minor bubbles of June and September are not very well described, which is to be expected. After all, the model is only able to describe a single bubble. Moreover, at early time periods, as well as after the big peak, the lower limit of the 95% prediction interval goes below zero. This is a consequence the variability is being modeled by a normal distribution with the width proportional to the square root of the mean value.
 
-### Main results
+![Cryptocurrency fit_all](img/Cryptocurrency_FOMO-FUD_fit%28update%29.png)
 
-To-Do...
+#### Describing the shape of the peak
+
+In order to improve the fit further, the process is repeated by using data from 2017-10-01 onwards (therefore excluding the two pre-peaks), and the variability model is replaced by a log-normal distribution. The fit of this improved model on the reduced data set is shown below.
+
+![Cryptocurrency fit_peak](img/Cryptocurrency_FOMO-FUD_%28jan%20peak%29.png)
+
+I personally find it astounding how well does the median prediction line match the 31-day moving average of the Google Trends data.
+
+#### Quo vadis, crypto?
+
+One way to use the above result is to monitor the Google Trends data for a break outside the 95% prediction interval. Now it the above assumptions hold approximately, one would expect to see either of these two things:
+- future trend data within the 95% prediction interval (the decay will continue),
+- or an upwards break-out (which would indicate this was a bubble indeed, but overlaid on slowly rising background adoption curve).
+
+Let's see what the future holds :-)
