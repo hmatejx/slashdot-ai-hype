@@ -8,7 +8,7 @@ options(mc.cores = parallel::detectCores())
 #library(shinystan)
 
 # load data
-dd <- read.csv("Facebook.csv", as.is = T, header = F, skip = 3)
+dd <- read.csv("multiTimeline.csv", as.is = T, header = F, skip = 3)
 names(dd) <- c("Date", "Popularity")
 dd$Date <- as.Date(paste0(dd$Date, "-01"), format = "%Y-%m-%d")
 
