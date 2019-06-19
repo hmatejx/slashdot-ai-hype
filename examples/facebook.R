@@ -8,7 +8,7 @@ options(mc.cores = parallel::detectCores())
 #library(shinystan)
 
 # load data
-dd <- read.csv("multiTimeline.csv", as.is = T, header = F, skip = 3)
+dd <- read.csv("Facebook.csv", as.is = T, header = F, skip = 3)
 names(dd) <- c("Date", "Popularity")
 dd$Date <- as.Date(paste0(dd$Date, "-01"), format = "%Y-%m-%d")
 
@@ -17,12 +17,14 @@ dd$Popularity[dd$Date >= as.Date("2012-10-01")] <- 0.804 * dd$Popularity[dd$Date
 dd$Popularity <- 100 * dd$Popularity / max(dd$Popularity, na.rm = T)
 
 # split into training and validation set
-dd.new <- dd[dd$Date > as.Date("2017-05-05"), ]
-dd <- dd[dd$Date <= as.Date("2017-05-05"), ]
+cutoff_date <- "2017-05-05"
+dd.new <- dd[dd$Date > as.Date(cutoff_date), ]
+dd <- dd[dd$Date <= as.Date(cutoff_date), ]
 
 # prepare list to serve as data for STAN
 idx <- which(dd$Popularity > 0)
-fit_data <- list(T = length(idx),
+fit_data <- list(Th = length(idx),
+                 Tn = 200,
                  Time = as.numeric(dd$Date[idx] - dd$Date[idx[1] - 1])/30,
                  Y = dd$Popularity[idx])
 Y_meas = fit_data$Y
@@ -53,7 +55,8 @@ print(fit, pars = c("sigma", "beta", "nu", "N", "S0", "I0", "R0"), digits_summar
 Y_pred <- t(apply(extract(fit, "Y_pred", permuted = F), 3, quantile, prob = c(0.025, 0.5, 0.975)))
 N_pred <- nrow(Y_pred)
 Time_pred <- dd$Date[idx[1] - 1] + (1:N_pred)*30
-plot(Time_pred, rep(NA, 2*length(idx)), ylim = c(0, max(Y_pred)),
+plot(Time_pred, rep(NA, fit_data$Th + fit_data$Tn),
+     ylim = c(0, max(Y_pred)), xlim = c(Time_pred[1], as.Date("2026-01-01")),
      xlab = "Date", ylab = "Normalized popularity",
      main = "Facebook popularity modeled by irSIR")
 polygon(c(Time_pred, rev(Time_pred)), c(Y_pred[, 1], rev(Y_pred[, 3])),
@@ -61,7 +64,7 @@ polygon(c(Time_pred, rev(Time_pred)), c(Y_pred[, 1], rev(Y_pred[, 3])),
 lines(Time_pred, Y_pred[, 2], lwd = 3)
 points(dd$Date[idx], Y_meas, pch = 21, bg = rgb(1, 1, 1, 0.6), cex = 1.2)
 points(dd.new$Date, dd.new$Popularity, pch = 21, bg = rgb(1, 0, 0, 0.6), cex = 1.2)
-abline(v = as.Date("2017-05-05"), lty = 2)
+abline(v = as.Date(cutoff_date), lty = 2)
 legend("topright", bty = "n",
        legend = c("Google Trends (train)",
                   "Google Trends (val.)",

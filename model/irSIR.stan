@@ -19,18 +19,20 @@ functions {
 }
 
 data {
-  int<lower=0> T;
-  real<lower=0> Time[T];
-  real<lower=0> Y[T];
+  int<lower=0> Th;
+  int<lower=0> Tn;
+  real<lower=0> Time[Th];
+  real<lower=0> Y[Th];
 }
 
 transformed data {
   real x_r[0];
   int x_i[0];
-  real Time_pred[2*T];
+  int Ttot = Th + Tn;
+  real Time_pred[Ttot];
   
-  for (t in 1:(2*T)) {
-    Time_pred[t] = t * Time[T] / T;
+  for (t in 1:Ttot) {
+    Time_pred[t] = t * Time[Th] / Th;
   }
 }
 
@@ -57,7 +59,7 @@ transformed parameters {
 }
 
 model {
-  real y[T];
+  real y[Th];
 
   // priors
   log_beta ~ normal(0, 1);
@@ -70,17 +72,17 @@ model {
   y = irSIR(Time, {S0, I0, R0}, {beta, nu, N}, x_r, x_i);
 
   // likelihood
-  for (t in 1:T) {
+  for (t in 1:Th) {
     Y[t] ~ normal(y[t], sqrt(fabs(y[t]) + 0.01)*sigma);
   }
 }
 
 generated quantities {
-  real Y_pred[2*T];
+  real Y_pred[Ttot];
  
   Y_pred = irSIR(Time_pred, {S0, I0, R0}, {beta, nu, N}, x_r, x_i);
   
-  for (t in 1:(2*T)) {
+  for (t in 1:Ttot) {
     Y_pred[t] = normal_rng(Y_pred[t], sqrt(fabs(Y_pred[t]) + 0.01)*sigma);
   }
 }
