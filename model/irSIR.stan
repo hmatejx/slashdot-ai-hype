@@ -1,5 +1,5 @@
 functions {
-  real[] irSIR_ODE(real t, real[] x, real[] parms, real[] x_r, int[] x_i) {
+  real[] irSIR_ODE(real t, real[] x, real[] parms, data real[] x_r, data int[] x_i) {
     real dxdt[3];
 
     dxdt[1] = -parms[1] * x[2] * x[1] / parms[3];
@@ -9,10 +9,10 @@ functions {
     return dxdt;
   }
   
-  real[] irSIR(real[] t, real[] init, real[] parms, real[] x_r, int[] x_i) {
+  real[] irSIR(real[] t, real[] init, real[] parms, data real[] x_r, data int[] x_i) {
     real y_hat[size(t), 3];
  
-    y_hat = integrate_ode_rk45(irSIR_ODE, init, 0, t, parms, x_r, x_i);
+    y_hat = integrate_ode_rk45(irSIR_ODE, init, 0.0, t, parms, x_r, x_i);
     
     return y_hat[, 2];
   }

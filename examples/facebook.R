@@ -30,7 +30,7 @@ fit_data <- list(Th = length(idx),
 Y_meas = fit_data$Y
 
 # MCMC parameters
-iter <- 800
+iter <- 1600
 warmup <- 400
 nChains <- 4
 
@@ -65,7 +65,8 @@ lines(Time_pred, Y_pred[, 2], lwd = 3)
 points(dd$Date[idx], Y_meas, pch = 21, bg = rgb(1, 1, 1, 0.6), cex = 1.2)
 points(dd.new$Date, dd.new$Popularity, pch = 21, bg = rgb(1, 0, 0, 0.6), cex = 1.2)
 abline(v = as.Date(cutoff_date), lty = 2)
-legend("topright", bty = "n",
+abline(v = as.Date("2021-10-01"), col = "steelblue4")
+legend("topright", #bty = "n",
        legend = c("Google Trends (train)",
                   "Google Trends (val.)",
                   "Curve of best fit",
@@ -73,3 +74,4 @@ legend("topright", bty = "n",
        lty = c(NA, NA, 1, NA), lwd = c(NA, NA, 3, NA), pch = c(21, 21, NA, 15),
        col = c("black", "black", "black", "gray"), pt.cex = c(1.2, 1.2, NA, 2),
        pt.bg = c("white", "red", NA, NA))
+text(as.Date("2021-10-01"), 30, "Meta rebrand", adj = -0.1, col = "steelblue4")
